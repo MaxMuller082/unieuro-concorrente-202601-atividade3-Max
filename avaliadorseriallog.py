@@ -1,8 +1,6 @@
 import os
 import time
-import random
-import string
-
+from multiprocessing import Pool
 
 # ===============================
 # Consolidação dos resultados
@@ -34,7 +32,6 @@ def consolidar_resultados(resultados):
         "contagem": contagem_global
     }
 
-
 # ===============================
 # Processamento de arquivo
 # ===============================
@@ -63,7 +60,7 @@ def processar_arquivo(caminho):
             if p in contagem:
                 contagem[p] += 1
 
-        # Simulação de processamento pesado
+        # Simulação de carga computacional
         for _ in range(1000):
             pass
 
@@ -73,8 +70,6 @@ def processar_arquivo(caminho):
         "caracteres": total_caracteres,
         "contagem": contagem
     }
-
-
 
 # ===============================
 # Execução serial
@@ -87,7 +82,6 @@ def executar_serial(pasta):
 
     for arquivo in os.listdir(pasta):
         caminho = os.path.join(pasta, arquivo)
-
         resultado = processar_arquivo(caminho)
         resultados.append(resultado)
 
@@ -96,6 +90,28 @@ def executar_serial(pasta):
     resumo = consolidar_resultados(resultados)
 
     print("\n=== EXECUÇÃO SERIAL ===")
+    print(f"Arquivos processados: {len(resultados)}")
+    print(f"Tempo total: {fim - inicio:.4f} segundos")
+
+    return fim - inicio
+
+# ===============================
+# Execução paralela com Pool
+# ===============================
+
+def executar_pool(pasta, n_processos):
+    arquivos = [os.path.join(pasta, f) for f in os.listdir(pasta)]
+
+    inicio = time.time()
+
+    with Pool(processes=n_processos) as pool:
+        resultados = pool.map(processar_arquivo, arquivos)
+
+    fim = time.time()
+
+    resumo = consolidar_resultados(resultados)
+
+    print(f"\n=== EXECUÇÃO POOL ({n_processos} processos) ===")
     print(f"Arquivos processados: {len(resultados)}")
     print(f"Tempo total: {fim - inicio:.4f} segundos")
 
@@ -108,15 +124,25 @@ def executar_serial(pasta):
     for k, v in resumo["contagem"].items():
         print(f"  {k}: {v}")
 
-    return resumo
-
+    return fim - inicio
 
 # ===============================
-# Main
+# MAIN
 # ===============================
 
 if __name__ == "__main__":
-    pasta = "log2"
+    pasta = "log2"  # 👈 AGORA USANDO LOG2
 
     print("Executando versão serial...")
-    executar_serial(pasta)
+    tempo_serial = executar_serial(pasta)
+
+    tempos = {}
+
+    for n in [2, 4, 8, 12]:
+        t = executar_pool(pasta, n)
+        tempos[n] = t
+
+    print("\n=== COMPARAÇÃO ===")
+    for n, t in tempos.items():
+        speedup = tempo_serial / t
+        print(f"{n} processos -> {t:.4f}s | speedup: {speedup:.2f}x")
