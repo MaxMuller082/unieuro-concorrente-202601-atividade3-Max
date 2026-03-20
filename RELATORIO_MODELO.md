@@ -1,66 +1,64 @@
 
 # Relatório da NOME DA ATIVIDADE
 
-**Disciplina:** 
-**Aluno(s):**
-**Turma:**
-**Professor:**
-**Data:**
+**Disciplina:** Programação Concorrente
+**Aluno(s):** Max Muller Da Silva Rosa
+**Turma:** S.I, 4 Semestre
+**Professor:** Rafael Marconi
+**Data:** 20/03/2026
 
 ---
 
 # 1. Descrição do Problema
 
-Descreva o problema computacional resolvido pelo programa.
+O trabalho teve como objetivo desenvolver um programa capaz de analisar grandes volumes de arquivos de log, extraindo informações como número de linhas, quantidade de palavras, caracteres e frequência de palavras-chave específicas.
 
-## Orientações para preenchimento
+A solução foi implementada em duas versões: uma sequencial (serial) e outra paralela, com o intuito de comparar o desempenho entre elas.
 
-Explique:
+Na versão paralela, foi utilizada a biblioteca multiprocessing, com o uso de Pool, permitindo distribuir os arquivos entre vários processos para execução simultânea.
 
-* Qual problema foi implementado
-* Qual algoritmo foi utilizado
-* Qual o tamanho da entrada utilizada nos testes
-* Qual o objetivo da paralelização
+Os testes foram realizados com um conjunto de dados contendo aproximadamente **10 milhões de linhas**, distribuídas em diversos arquivos de texto.
+
+A complexidade do algoritmo é linear, pois cada linha dos arquivos é percorrida apenas uma vez durante o processamento.
 
 **Questões que devem ser respondidas:**
 
 * Qual é o objetivo do programa?
-* Qual o volume de dados processado?
-* Qual algoritmo foi utilizado?
-* Qual a complexidade aproximada do algoritmo?
+* R= analisar arquivos de log e comparar desempenho entre execução serial e paralela
 
+* Qual o volume de dados processado?
+* R= cerca de 10 milhões de linhas
+* Qual algoritmo foi utilizado?
+* R= leitura e contagem de dados em arquivos
+* Qual a complexidade aproximada do algoritmo?
+* R= O(n)
 ---
 
 # 2. Ambiente Experimental
 
-Descreva o ambiente em que os experimentos foram realizados.
-
-## Orientações
-
-Informar as características do hardware e software utilizados na execução dos testes.
-
-| Item                        | Descrição |
-| --------------------------- | --------- |
-| Processador                 |           |
-| Número de núcleos           |           |
-| Memória RAM                 |           |
-| Sistema Operacional         |           |
-| Linguagem utilizada         |           |
-| Biblioteca de paralelização |           |
-| Compilador / Versão         |           |
+| Item                        | Descrição             |
+| --------------------------- | ---------             |
+| Processador                 | i5-12500              |
+| Número de núcleos           |     12                |
+| Memória RAM                 |    16GB               |
+| Sistema Operacional         |  Windows              |
+| Linguagem utilizada         |  Python               |
+| Biblioteca de paralelização | Multiprocessing (Pool)|
+| Compilador / Versão         | Python 3.13           | 
 
 ---
 
 # 3. Metodologia de Testes
 
-Explique como os experimentos foram conduzidos.
+Os experimentos foram realizados executando o programa em diferentes configurações de paralelismo, variando o número de processos.
+
 
 ## Orientações
 
 Descrever:
 
-* Como o tempo de execução foi medido
-* Quantas execuções foram realizadas
+* O tempo de execução foi medido utilizando a função `time.time()`, registrando o tempo no início e no final de cada execução.
+* Para cada configuração, foi realizada uma execução utilizando o mesmo conjunto de dados.
 * Se foi utilizada média dos tempos
 * Qual tamanho da entrada foi usado
 
@@ -68,19 +66,18 @@ Descrever:
 
 Os experimentos devem ser realizados nas seguintes configurações:
 
-* 1 thread/processo (versão serial)
-* 2 threads/processos
-* 4 threads/processos
-* 8 threads/processos
-* 12 threads/processos
+* 1 processo (execução sequencial)
+* 2 processos
+* 4 processos
+* 8 processos
+* 12 processos
 
 ### Procedimento experimental
 
 Descrever:
 
-* Número de execuções para cada configuração
-* Forma de cálculo da média
-* Condições de execução (ex: máquina dedicada, carga do sistema, etc.)
+Os testes foram executados em um ambiente controlado, sem grande interferência de outros programas.
+Os tempos foram coletados diretamente durante a execução do código.
 
 ---
 
@@ -95,11 +92,11 @@ Preencha a tabela com os **tempos médios de execução** obtidos.
 
 | Nº Threads/Processos | Tempo de Execução (s) |
 | -------------------- | --------------------- |
-| 1                    |                       |
-| 2                    |                       |
-| 4                    |                       |
-| 8                    |                       |
-| 12                   |                       |
+| 1                    |       95.0349s        |
+| 2                    |       47.7677s        |
+| 4                    |       25.9577s        |
+| 8                    |       17.6893s        |
+| 12                   |       17.0794s        |
 
 ---
 
@@ -136,11 +133,11 @@ Preencha a tabela abaixo utilizando os tempos medidos.
 
 | Threads/Processos | Tempo (s) | Speedup | Eficiência |
 | ----------------- | --------- | ------- | ---------- |
-| 1                 |           | 1.0     | 1.0        |
-| 2                 |           |         |            |
-| 4                 |           |         |            |
-| 8                 |           |         |            |
-| 12                |           |         |            |
+| 1                 |  95.0349s | 1.0     | 1.0        |
+| 2                 |  51.3736s | 1.99    | 0.99       |
+| 4                 |  25.9577s | 3.66    | 0.92       |
+| 8                 |  17.6893s | 5.37    | 0.67       |
+| 12                |  17.0794s | 5.56    | 0.46       |
 
 ---
 
@@ -148,12 +145,6 @@ Preencha a tabela abaixo utilizando os tempos medidos.
 
 Construa um gráfico mostrando o **tempo de execução em função do número de threads/processos**.
 
-## Orientações
-
-* Eixo X: número de threads/processos
-* Eixo Y: tempo de execução (segundos)
-
-Inserir o gráfico abaixo:
 
 ![Gráfico Tempo Execução](graficos/tempo_execucao.png)
 
@@ -163,13 +154,7 @@ Inserir o gráfico abaixo:
 
 Construa um gráfico mostrando o **speedup obtido**.
 
-## Orientações
 
-* Eixo X: número de threads/processos
-* Eixo Y: speedup
-* Incluir também a **linha de speedup ideal (linear)** para comparação
-
-Inserir o gráfico abaixo:
 
 ![Gráfico Speedup](graficos/speedup.png)
 
@@ -179,13 +164,6 @@ Inserir o gráfico abaixo:
 
 Construa um gráfico mostrando a **eficiência da paralelização**.
 
-## Orientações
-
-* Eixo X: número de threads/processos
-* Eixo Y: eficiência
-* Valores entre 0 e 1
-
-Inserir o gráfico abaixo:
 
 ![Gráfico Eficiência](graficos/eficiencia.png)
 
